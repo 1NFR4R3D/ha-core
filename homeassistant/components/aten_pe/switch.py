@@ -60,9 +60,9 @@ async def async_setup_platform(
     )
 
     try:
-        await hass.async_add_executor_job(dev.initialize)
+        await dev.initialize()
         mac = await dev.deviceMAC()
-        outlets = dev.outlets()
+        outlets = [outlet async for outlet in dev.outlets()]
         name = await dev.deviceName()
         model = await dev.modelName()
         sw_version = await dev.deviceFWversion()
@@ -89,7 +89,7 @@ class AtenSwitch(SwitchEntity):
     _attr_device_class = SwitchDeviceClass.OUTLET
 
     def __init__(
-        self, device: AtenPE, info: DeviceInfo, mac: str, outlet: str, name: str
+        self, device: AtenPE, info: DeviceInfo, mac: str, outlet: int, name: str
     ) -> None:
         """Initialize an ATEN PE switch."""
         self._device = device
